@@ -1,6 +1,6 @@
-const { SuccessResponse, ErrorResponse } = require('../utils/common');
+const { SuccessResponse, ErrorResponse } = require('../../utils/common');
 const { StatusCodes } = require('http-status-codes');
-const { UserService } = require('../services')
+const { UserService } = require('../../services')
 
 
 async function login(req, res) {

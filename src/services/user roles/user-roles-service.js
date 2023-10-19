@@ -1,7 +1,7 @@
 const { StatusCodes } = require('http-status-codes');
-const AppError = require('../utils/errors/app-error');
+const AppError = require('../../utils/errors/app-error');
 
-const { UserRolesRepository } = require('../repositories');
+const { UserRolesRepository } = require('../../repositories');
 
 const userRolesRepo = new UserRolesRepository();
 

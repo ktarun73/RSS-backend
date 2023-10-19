@@ -1,6 +1,6 @@
-const { SuccessResponse, ErrorResponse } = require('../utils/common');
+const { SuccessResponse, ErrorResponse } = require('../../utils/common');
 const { StatusCodes } = require('http-status-codes');
-const { UserRolesService } = require('../services')
+const { UserRolesService } = require('../../services')
 
 async function getUserRoles(req,res){
     try {
