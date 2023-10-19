@@ -9,13 +9,12 @@ async function login(data) {
     try {
         const user = await userRepo.getUserByName(data.username);
         if (!user) {
-            throw new AppError('Bad credentials', StatusCodes.NOT_FOUND);
+            throw new AppError('Bad credential', StatusCodes.NOT_FOUND);
         }
         const passwordMatch = Auth.checkPassword(data.password, user.password);
         if (!passwordMatch) {
-            throw new AppError('Bad credentials', StatusCodes.BAD_REQUEST);
+            throw new AppError('Bad credential', StatusCodes.BAD_REQUEST);
         }
-
         const jwt = Auth.createToken({ id: user.id, username: user.username });
         return { 'userid': user.id, 'token': jwt};
     } catch (error) {
