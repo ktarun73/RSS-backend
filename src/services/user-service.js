@@ -9,6 +9,7 @@ async function login(data) {
     try {
         console.log("nkrf");
         console.log("nkrfsfert");
+        console.log("hi");
         const user = await userRepo.getUserByName(data.username);
         if (!user) {
             throw new AppError('Bad credential', StatusCodes.NOT_FOUND);
