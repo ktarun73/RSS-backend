@@ -1,7 +1,6 @@
 const { SuccessResponse, ErrorResponse } = require('../../utils/common');
 const { StatusCodes } = require('http-status-codes');
-const { UserService } = require('../../services')
-
+const { UserService , UserDetailsService } = require('../../services')
 
 async function login(req, res) {
     try {
@@ -20,6 +19,8 @@ async function login(req, res) {
                 .json(ErrorResponse);
     }
 }
+
+
 async function registerUser(req,res){
     try {
         const bodyReq = req.body;
@@ -29,8 +30,23 @@ async function registerUser(req,res){
             role_id: bodyReq.role_id,       
         };
         const register = await UserService.registerUser(bodyData);
-       SuccessResponse.data = register;
-       SuccessResponse.message = "register Created Successfully";
+        const registeredUserId = register.id;
+        const registeredUserData = {
+            user_id:registeredUserId,
+            mobile_number:bodyReq.mobile_number,
+            name:bodyReq.name.trim(),
+            email:bodyReq.email.trim(),
+            gender:bodyReq.gender.trim(),
+            address:bodyReq.address.trim(),
+            pincode:bodyReq.pincode
+        }
+        const registerUserDetails = await UserDetailsService.createUserDetails(registeredUserData);
+        const responseData = {
+            user : register,
+            userDetails: registerUserDetails ,
+        }
+        SuccessResponse.data = responseData;
+        SuccessResponse.message = "register Created Successfully";
         return res.status(StatusCodes.OK).json(SuccessResponse); 
     } 
     catch (error) {
@@ -38,17 +54,12 @@ async function registerUser(req,res){
         console.log(error);
         return res.status(error.statusCode).json(ErrorResponse);
     }
-
 }
-
-
-
 
 
   async function getAllUser(req, res) {
     try {
       const response = await UserService.getAllUser();
-      console.log(response);
       SuccessResponse.data = response;
       SuccessResponse.message = "Success";
       return res.status(StatusCodes.OK).json(SuccessResponse);
