@@ -9,7 +9,16 @@ class UserRepository extends CrudRepository {
 
     async getUserByName(name){
         const user = await User.findOne({ where: { username: name } });
+        console.log("hello",user);
         return user;        
+    }
+    async getUserByEmail(email) {
+        const user = await User.findOne({ where: { email: email } });
+        return user;
+    }
+    async getUserById(id) {
+        const user = await User.findOne({ where: { id:id } });
+        return user;
     }
 }
 
