@@ -23,33 +23,20 @@ async function login(req, res) {
 async function registerUser(req,res){
     try {
         const bodyReq = req.body;
-        
-     
-
         const bodyData ={
             username: bodyReq.username.trim(),
             password: bodyReq.password,
-            role_id: bodyReq.role_id,
-            
+            role_id: bodyReq.role_id,       
         };
-        
-
         const register = await UserService.registerUser(bodyData);
-
        SuccessResponse.data = register;
        SuccessResponse.message = "register Created Successfully";
-
-        return res.status(StatusCodes.OK).json(SuccessResponse);
-        
-
-        
-    } catch (error) {
+        return res.status(StatusCodes.OK).json(SuccessResponse); 
+    } 
+    catch (error) {
         ErrorResponse.error = error;
         console.log(error);
         return res.status(error.statusCode).json(ErrorResponse);
-        
-        
-
     }
 
 }
