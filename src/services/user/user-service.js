@@ -36,7 +36,6 @@ async function registerUser(data) {
     try {
       
       const user = await userRepo.create(data);
-     
       return user;
     } catch (error) {
       console.log(error.name, error.message);
@@ -67,7 +66,6 @@ async function registerUser(data) {
   async function getAllUser(req, res) {
     try {
       const user = await userRepo.getAll();
-      console.log(user);
       return user;
     } catch (error) {
       console.log(error);

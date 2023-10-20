@@ -18,14 +18,14 @@ module.exports = (sequelize, DataTypes) => {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
+        autoIncrement: true
       },
       user_id: {
         type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
+        allowNull: false,
       },
       mobile_number: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false,
         unique: true,
       },
@@ -42,9 +42,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       gender: {
         type: DataTypes.STRING,
-        validate: {
-          enum: ["male", "female"],
-        },
       },
       address: {
         type: DataTypes.STRING,
@@ -57,7 +54,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "UserDetail",
+      modelName: "UserDetails",
       tableName: "user_detail",
       timestamps: false,
     }
