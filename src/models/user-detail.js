@@ -1,10 +1,8 @@
 "use strict";
 const { Model } = require("sequelize");
 
-const bcrypt = require("bcrypt");
-const { ServerConfig } = require("../config");
 module.exports = (sequelize, DataTypes) => {
-  class User extends Model {
+  class UserDetail extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -12,46 +10,57 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.belongsTo(models.UserRoles, { foreignKey: "role_id" });
+      this.belongsTo(models.User, { foreignKey: "user_id" });
     }
   }
-  User.init(
+  UserDetail.init(
     {
       id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+      },
+      user_id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
       },
-      username: {
-        type: DataTypes.STRING,
+      mobile_number: {
+        type: DataTypes.INTEGER,
         allowNull: false,
         unique: true,
       },
-      password: {
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      email: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          len: [3, 50],
+          isEmail: true,
         },
       },
-      role_id: {
+      gender: {
+        type: DataTypes.STRING,
+        validate: {
+          enum: ["male", "female"],
+        },
+      },
+      address: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      pincode: {
         type: DataTypes.INTEGER,
-        allowNull: true,
+        allowNull: false,
       },
     },
     {
       sequelize,
-      modelName: "User",
-      tableName: "user",
+      modelName: "UserDetail",
+      tableName: "user_detail",
       timestamps: false,
     }
   );
-  User.beforeCreate(function encrypt(user) {
-    const encryptedPassword = bcrypt.hashSync(
-      user.password,
-      +ServerConfig.SALT_ROUNDS
-    );
-    user.password = encryptedPassword;
-  });
-  return User;
+  return UserDetail;
 };
