@@ -79,41 +79,27 @@ async function registerUser(req,res){
 }
 
 async function updateUser(req, res) {
-    try {
-        
+    try {   
       const bodyReq = req.body;
       const bodyData = {
         password:bodyReq.password
-        
-
       };
-      
-      
-
-  
-  
       const update = await UserService.updateUser(req.params.id, bodyData);
-      const updateUserId = update.id;
       const updateUserData = {
-    
-        mobile_number:bodyReq.mobile_number,
+            mobile_number:bodyReq.mobile_number,
             name:bodyReq.name.trim(),
             email:bodyReq.email.trim(),
             gender:bodyReq.gender.trim(),
             address:bodyReq.address.trim(),
             pincode:bodyReq.pincode,
       }
-
-      const updateUserDetails = await UserDetailsService.updateUserDetails(req.params.id,updateUserData);
+      const userData = await UserDetailsService.getUserDetailsByUserId(req.params.id);
+      const updateUserDetails = await UserDetailsService.updateUserDetails(userData.id,updateUserData);
         const responseData = {
             user : update,
-            userDetails: updateUserDetails ,
+            userDetails: updateUserDetails
         }
-
-
       SuccessResponse.data = responseData;
-      
-      
       SuccessResponse.message = "User Updated Successfully";
   
       return res.status(StatusCodes.OK).json(SuccessResponse);
@@ -126,7 +112,7 @@ async function updateUser(req, res) {
   
 
 
-  async function getAllUser(req, res) {
+async function getAllUser(req, res) {
     try {
       const response = await UserService.getAllUser();
       SuccessResponse.data = response;
@@ -137,7 +123,9 @@ async function updateUser(req, res) {
   
       return res.status(error.statusCode).json(ErrorResponse);
     }
-  }
+}
+
+
   
   
 module.exports = {

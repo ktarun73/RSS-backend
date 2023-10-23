@@ -64,11 +64,7 @@ async function registerUser(data) {
 
   async function updateUser(id, data) {
     try {
-      
       const user = await userRepo.update(id, data);
-      
-      
-      
       return user;
     } catch (error) {
       if (error.name == "SequelizeValidationError") {
@@ -92,9 +88,22 @@ async function registerUser(data) {
 
   
 
-  async function getAllUser(req, res) {
+  async function getAllUser() {
     try {
       const user = await userRepo.getAll();
+      return user;
+    } catch (error) {
+      console.log(error);
+      throw new AppError(
+        "Cannot get all Users objects",
+        StatusCodes.INTERNAL_SERVER_ERROR
+      );
+    }
+  }
+
+  async function getUserById(id) {
+    try {
+      const user = await userRepo.get(id);
       return user;
     } catch (error) {
       console.log(error);
@@ -113,6 +122,5 @@ module.exports = {
     registerUser,
     getAllUser,
     updateUser,
-    
-    
+    getUserById
 }
