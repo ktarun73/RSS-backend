@@ -1,6 +1,6 @@
 const { SuccessResponse, ErrorResponse } = require('../../utils/common');
 const { StatusCodes } = require('http-status-codes');
-const { UserService , UserDetailsService } = require('../../services')
+const { UserService , UserDetailsService , MailerService } = require('../../services')
 
 async function login(req, res) {
     try {
@@ -26,7 +26,7 @@ async function registerUser(req,res){
         const bodyReq = req.body;
         const bodyData ={
             username: bodyReq.username.trim(),
-            password: bodyReq.password,
+            password: bodyReq.password.trim(),
             role_id: bodyReq.role_id,       
         };
         const register = await UserService.registerUser(bodyData);
@@ -45,6 +45,27 @@ async function registerUser(req,res){
             user : register,
             userDetails: registerUserDetails ,
         }
+
+        const mailBody = {
+            username: bodyData.username,
+            password: bodyData.password,
+            name: registeredUserData.name,
+            mobile_number:registeredUserData.mobile_number,
+            email: registeredUserData.email,
+            gender: registeredUserData.gender,
+            address: registeredUserData.address,
+            pincode: registeredUserData.pincode
+        }
+
+        let message = {
+            from: 'ktarun2500@gmail.com',
+            to: bodyReq.email,
+            subject: "Registration successful, Your details are here!",
+            html: '<b>' + JSON.stringify(mailBody) + '</b>'
+            }
+    
+    MailerService.transporter.sendMail(message);
+
         SuccessResponse.data = responseData;
         SuccessResponse.message = "register Created Successfully";
         return res.status(StatusCodes.OK).json(SuccessResponse); 

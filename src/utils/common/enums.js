@@ -3,6 +3,12 @@ const userRoles = {
     2:"USER"
 }
 
+const genders = {
+    "male":"MALE",
+    "female":"FEMALE"
+}
+
 module.exports = {
-    userRoles
+    userRoles,
+    genders
 }
