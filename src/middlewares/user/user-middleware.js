@@ -52,6 +52,28 @@ else if (!bodyReq.password) {
   next();
 }
 
+async function validateUpdateUserRequest(req, res, next) {
+  const bodyReq = req.body;
+  if (!req.is('application/json')) {
+      ErrorResponse.message = 'Something went wrong';
+      ErrorResponse.error = new AppError(['Content type must be of application/json'], StatusCodes.BAD_REQUEST)
+      return res
+          .status(StatusCodes.BAD_REQUEST)
+          .json(ErrorResponse);
+  }
+  else if (!bodyReq.password) {
+    ErrorResponse.message = "Something went to wrong";
+    ErrorResponse.error = new AppError(
+      ["password parameter missing in the incoming request"],
+      StatusCodes.BAD_REQUEST
+    );
+    return res.status(StatusCodes.BAD_REQUEST).json(ErrorResponse);
+  }
+  
+  next();
+}
+
 module.exports = {
   validateCreateUserRequest,
+  validateUpdateUserRequest,
 };

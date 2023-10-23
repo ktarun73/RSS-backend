@@ -52,9 +52,57 @@ async function registerUser(req,res){
     catch (error) {
         ErrorResponse.error = error;
         console.log(error);
+
         return res.status(error.statusCode).json(ErrorResponse);
     }
 }
+
+async function updateUser(req, res) {
+    try {
+        
+      const bodyReq = req.body;
+      const bodyData = {
+        password:bodyReq.password
+        
+
+      };
+      
+      
+
+  
+  
+      const update = await UserService.updateUser(req.params.id, bodyData);
+      const updateUserId = update.id;
+      const updateUserData = {
+    
+        mobile_number:bodyReq.mobile_number,
+            name:bodyReq.name.trim(),
+            email:bodyReq.email.trim(),
+            gender:bodyReq.gender.trim(),
+            address:bodyReq.address.trim(),
+            pincode:bodyReq.pincode,
+      }
+
+      const updateUserDetails = await UserDetailsService.updateUserDetails(req.params.id,updateUserData);
+        const responseData = {
+            user : update,
+            userDetails: updateUserDetails ,
+        }
+
+
+      SuccessResponse.data = responseData;
+      
+      
+      SuccessResponse.message = "User Updated Successfully";
+  
+      return res.status(StatusCodes.OK).json(SuccessResponse);
+    } catch (error) {
+      ErrorResponse.error = error;
+      console.log(error);
+      return res.status(error.statusCode).json(ErrorResponse);
+    }
+  }
+  
 
 
   async function getAllUser(req, res) {
@@ -75,5 +123,6 @@ module.exports = {
     login,
     registerUser,
     getAllUser,
+    updateUser,
    
 }
