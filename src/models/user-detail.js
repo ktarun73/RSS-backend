@@ -1,6 +1,9 @@
 "use strict";
 const { Model } = require("sequelize");
 
+const {Enums} = require('../utils/common')
+const genders = Enums.genders;
+
 module.exports = (sequelize, DataTypes) => {
   class UserDetail extends Model {
     /**
@@ -36,12 +39,15 @@ module.exports = (sequelize, DataTypes) => {
       email: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
         validate: {
           isEmail: true,
         },
       },
       gender: {
         type: DataTypes.STRING,
+        allowNull: false,
+        values:[genders.female , genders.male]
       },
       address: {
         type: DataTypes.STRING,
