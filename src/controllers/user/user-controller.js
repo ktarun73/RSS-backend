@@ -20,7 +20,6 @@ async function login(req, res) {
     }
 }
 
-
 async function registerUser(req,res){
     try {
         const bodyReq = req.body;
@@ -64,16 +63,15 @@ async function registerUser(req,res){
             html: '<b>' + JSON.stringify(mailBody) + '</b>'
             }
     
-    MailerService.transporter.sendMail(message);
+         MailerService.transporter.sendMail(message);
 
         SuccessResponse.data = responseData;
-        SuccessResponse.message = "register Created Successfully";
+        SuccessResponse.message = "User registered";
         return res.status(StatusCodes.OK).json(SuccessResponse); 
     } 
     catch (error) {
         ErrorResponse.error = error;
         console.log(error);
-
         return res.status(error.statusCode).json(ErrorResponse);
     }
 }
@@ -101,7 +99,6 @@ async function updateUser(req, res) {
         }
       SuccessResponse.data = responseData;
       SuccessResponse.message = "User Updated Successfully";
-  
       return res.status(StatusCodes.OK).json(SuccessResponse);
     } catch (error) {
       ErrorResponse.error = error;
@@ -109,8 +106,6 @@ async function updateUser(req, res) {
       return res.status(error.statusCode).json(ErrorResponse);
     }
   }
-  
-
 
 async function getAllUser(req, res) {
     try {
@@ -125,9 +120,6 @@ async function getAllUser(req, res) {
     }
 }
 
-
-  
-  
 module.exports = {
     login,
     registerUser,
