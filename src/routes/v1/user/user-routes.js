@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post( "/login", AuthRequestMiddlewares.validateAuthRequest,UserController.login);
 router.post("/register",UserMiddlewares.validateCreateUserRequest,UserDetailsMiddlewares.validateCreateUserDetailRequest,UserController.registerUser);
-router.post('/:id',UserMiddlewares.validateUpdateUserRequest,UserDetailsMiddlewares.validateUpdateUserDetailRequest,UserController.updateUser);
+router.post('/:id',UserMiddlewares.checkAuthentication,UserMiddlewares.validateUpdateUserRequest,UserDetailsMiddlewares.validateUpdateUserDetailRequest,UserController.updateUser);
 
 
 

@@ -1,9 +1,11 @@
 const { StatusCodes } = require("http-status-codes");
 
-const { ErrorResponse } = require("../../utils/common");
+const { ErrorResponse , Enums } = require("../../utils/common");
 const AppError = require("../../utils/errors/app-error");
 const {UserRepository} = require('../../repositories')
 const userRepo = new UserRepository();
+const {UserService} = require('../../services/')
+const userRoles = Enums.userRoles;
 
 async function validateCreateUserRequest(req, res, next) {
   const bodyReq = req.body;
@@ -73,7 +75,29 @@ async function validateUpdateUserRequest(req, res, next) {
   next();
 }
 
+async function checkAuthentication(req, res, next) {
+  try {
+      const response = await UserService.isAuthenticated(req.headers.authorization);
+      if(response.id == req.params.id || response.role==userRoles.ADMIN){
+        if (response) {
+          req.user = response.id; // setting the user id in the req object
+          next();
+        }
+      }else{
+        throw new AppError('Bad request , Unable to update', StatusCodes.BAD_REQUEST);
+      }
+  } catch (error) {
+      ErrorResponse.statusCode = error.statusCode;
+      ErrorResponse.message = error.explanation;
+      return res
+          .status(error.statusCode)
+          .json(ErrorResponse);
+  }
+
+}
+
 module.exports = {
   validateCreateUserRequest,
   validateUpdateUserRequest,
+  checkAuthentication
 };
