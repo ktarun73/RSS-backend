@@ -85,6 +85,29 @@ async function registerUser(data) {
     }
   }
 
+  async function deleteUser(id, data) {
+    try {
+      const user = await userRepo.destroy(id, data);
+      return user;
+    } catch (error) {
+      if (error.name == "SequelizeValidationError") {
+        let explanation = [];
+        error.errors.forEach((err) => {
+          explanation.push(err.message);
+        });
+        throw new AppError(explanation, StatusCodes.BAD_REQUEST);
+      } else if (error.name == "SequelizeForeignKeyConstraintError") {
+        throw new AppError(error.message, StatusCodes.BAD_REQUEST);
+      } else if (error.statusCode == StatusCodes.NOT_FOUND) {
+        throw new AppError(error.message, StatusCodes.NOT_FOUND);
+      }
+      throw new AppError(
+        "Cannot update the user object",
+        StatusCodes.INTERNAL_SERVER_ERROR
+      );
+    }
+  }
+
 
   
 
@@ -101,7 +124,7 @@ async function registerUser(data) {
     }
   }
 
-  async function getUserById(id) {
+  async function getUser(id) {
     try {
       const user = await userRepo.get(id);
       return user;
@@ -144,6 +167,11 @@ module.exports = {
     registerUser,
     getAllUser,
     updateUser,
-    getUserById,
+
+    getUser,
+    deleteUser,
+
+    
     isAuthenticated
+
 }

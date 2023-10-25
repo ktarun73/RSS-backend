@@ -107,23 +107,103 @@ async function updateUser(req, res) {
     }
   }
 
-async function getAllUser(req, res) {
+
+  async function  deleteUser(req,res){
     try {
-      const response = await UserService.getAllUser();
-      SuccessResponse.data = response;
-      SuccessResponse.message = "Success";
+        const userId = req.params.id;
+
+        const userData = await UserDetailsService.getUserDetailsByUserId(userId);
+        if(userData){
+            await UserDetailsService.deleteUserDetails(userData.id);
+
+        }
+        const deleteUser = await UserService.deleteUser(userId);
+        SuccessResponse.data = deleteUser;
+        SuccessResponse.message = "User and user details deleted successfully";
+        return res.status(StatusCodes.OK).json(SuccessResponse);
+    } catch (error) {
+        ErrorResponse.error = error;
+    return res.status(error.statusCode).json(ErrorResponse);
+        
+    }
+  }
+  
+
+
+
+
+  async function getAllUsers(req, res) {
+    try {
+      
+      const allUsers = await UserService.getAllUser();
+  
+      
+      const usersAndDetails = [];
+  
+      
+      for (const user of allUsers) {
+        const userDetails = await UserDetailsService.getUserDetailsByUserId(user.id);
+        if (userDetails) {
+          usersAndDetails.push({
+            user: user,
+            details: userDetails,
+          });
+        }
+      }
+  
+      SuccessResponse.data = usersAndDetails;
+      SuccessResponse.message = "All users and their details retrieved successfully";
+  
       return res.status(StatusCodes.OK).json(SuccessResponse);
     } catch (error) {
       ErrorResponse.error = error;
-  
-      return res.status(error.statusCode).json(ErrorResponse);
+      console.error(error);
+      return res.status(error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR).json(ErrorResponse);
     }
-}
+  }
+  
+
+
+
+  async function getUsers(req, res) {
+    try {
+      const userId = req.params.id;
+  
+  
+      const user = await UserService.getUser(userId);
+  
+      
+      const userDetails = await UserDetailsService.getUserDetailsByUserId(userId);
+  
+      if (!user) {
+        throw new AppError("User not found", StatusCodes.NOT_FOUND);
+      }
+  
+      SuccessResponse.data = {
+        user: user,
+        details: userDetails,
+      };
+      SuccessResponse.message = "User and user details retrieved successfully";
+  
+      return res.status(StatusCodes.OK).json(SuccessResponse);
+    } catch (error) {
+      ErrorResponse.error = error;
+      console.error(error);
+      return res.status(error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR).json(ErrorResponse);
+    }
+  }
+
+  
+  
+  
+  
 
 module.exports = {
     login,
     registerUser,
-    getAllUser,
+    getAllUsers,
     updateUser,
-   
+    deleteUser,
+    getUsers,
+  
 }
