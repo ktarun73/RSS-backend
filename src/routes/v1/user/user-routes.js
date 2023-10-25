@@ -8,10 +8,10 @@ router.post( "/login", AuthRequestMiddlewares.validateAuthRequest,UserController
 router.post("/register",UserMiddlewares.validateCreateUserRequest,UserDetailsMiddlewares.validateCreateUserDetailRequest,UserController.registerUser);
 
 router.post('/:id',UserMiddlewares.validateUpdateUserRequest,UserDetailsMiddlewares.validateUpdateUserDetailRequest,UserController.updateUser);
-router.delete('/:id',UserController.deleteUser);
-router.get('/',UserController.getAllUsers);
-router.get('/:id',UserController.getUsers)
 router.post('/:id',UserMiddlewares.checkAuthentication,UserMiddlewares.validateUpdateUserRequest,UserDetailsMiddlewares.validateUpdateUserDetailRequest,UserController.updateUser);
+router.delete('/:id',UserMiddlewares.checkAuthentication,UserController.deleteUser);
+router.get('/',UserMiddlewares.isadmin,UserController.getAllUsers);
+router.get('/:id',UserMiddlewares.isadmin,UserController.getUsers);
 
 
 

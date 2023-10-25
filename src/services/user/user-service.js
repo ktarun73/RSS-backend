@@ -131,7 +131,7 @@ async function registerUser(data) {
     } catch (error) {
       console.log(error);
       throw new AppError(
-        "Cannot get all Users objects",
+        "Cannot get User object",
         StatusCodes.INTERNAL_SERVER_ERROR
       );
     }
