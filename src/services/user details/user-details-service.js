@@ -51,7 +51,7 @@ async function createUserDetails(data) {
         throw new AppError(error.message, StatusCodes.NOT_FOUND);
       }
       throw new AppError(
-        "Cannot update the user detail object",
+        "Cannot create the user detail object",
         StatusCodes.INTERNAL_SERVER_ERROR
       );
     }
