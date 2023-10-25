@@ -78,8 +78,29 @@ async function validateUpdateUserRequest(req, res, next) {
 async function checkAuthentication(req, res, next) {
   try {
       const response = await UserService.isAuthenticated(req.headers.authorization);
-      if(response.id == req.params.id || response.role==userRoles.ADMIN){
-        if (response) {
+      if(response){
+        if (response.id == req.params.id || response.role==userRoles.ADMIN) {
+          req.user = response.id; // setting the user id in the req object
+          next();
+        }
+      }else{
+        throw new AppError('Bad request , Unable to update', StatusCodes.BAD_REQUEST);
+      }
+  } catch (error) {
+      ErrorResponse.statusCode = error.statusCode;
+      ErrorResponse.message = error.explanation;
+      return res
+          .status(error.statusCode)
+          .json(ErrorResponse);
+  }
+
+}
+
+async function isadmin(req, res, next) {
+  try {
+      const response = await UserService.isAuthenticated(req.headers.authorization);
+      if(response){
+        if (response.role==userRoles.ADMIN) {
           req.user = response.id; // setting the user id in the req object
           next();
         }
@@ -99,5 +120,6 @@ async function checkAuthentication(req, res, next) {
 module.exports = {
   validateCreateUserRequest,
   validateUpdateUserRequest,
-  checkAuthentication
+  checkAuthentication,
+  isadmin
 };
