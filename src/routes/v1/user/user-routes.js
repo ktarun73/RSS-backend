@@ -6,8 +6,8 @@ const { AuthRequestMiddlewares,UserMiddlewares , UserDetailsMiddlewares } = requ
 const router = express.Router();
 
 router.post('/forgot-password',UserMiddlewares.validateForgotPasswordRequest,UserController.forgotPassword);
-router.post('/verify-forgot-password-otp',UserMiddlewares.validateVerifyForgotPasswordOtpRequest,UserController.verifyOtp)
-router.post('/reset-password',UserMiddlewares.validateResetPasswordRequest,UserController.resetPassword)
+router.post('/verify-forgot-password-otp',UserMiddlewares.validateVerifyForgotPasswordOtpRequest,UserController.verifyOtp);
+router.post('/reset-password',UserMiddlewares.validateResetPasswordRequest,UserController.resetPassword);
 router.post( "/login", AuthRequestMiddlewares.validateAuthRequest,UserController.login);
 router.post("/register",UserMiddlewares.validateCreateUserRequest,UserDetailsMiddlewares.validateCreateUserDetailRequest,UserController.registerUser);
 router.post('/:id',UserMiddlewares.checkAuthentication,UserMiddlewares.validateUpdateUserRequest,UserDetailsMiddlewares.validateUpdateUserDetailRequest,UserController.updateUser);

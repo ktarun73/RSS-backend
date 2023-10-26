@@ -79,7 +79,7 @@ async function checkAuthentication(req, res, next) {
   try {
       const response = await UserService.isAuthenticated(req.headers.authorization);
       if(response){
-        if (response.id == req.params.id || response.role==userRoles.ADMIN) {
+        if (response.id == req.params.id || response.role.id==userRoles.ADMIN) {
           req.user = response.id; // setting the user id in the req object
           next();
         }
@@ -100,7 +100,7 @@ async function isadmin(req, res, next) {
   try {
       const response = await UserService.isAuthenticated(req.headers.authorization);
       if(response){
-        if (response.role==userRoles.ADMIN) {
+        if (response.role_id==userRoles.ADMIN) {
           req.user = response.id; // setting the user id in the req object
           next();
         }
