@@ -1,7 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 
-const {Enums} = require('../utils/common')
+// const {Enums} = require('../utils/common')
 
 module.exports = (sequelize, DataTypes) => {
     class ItemDetail extends Model {
@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
        */
       static associate(models) {
         // define association here
-        this.belongsTo(models.User, { foreignKey: "id" });
+        // this.belongsTo(models.ItemDetails, { foreignKey: "id" });
       }
     }
 
@@ -63,7 +63,7 @@ module.exports = (sequelize, DataTypes) => {
         {
             sequelize,
             modelName: "ItemDetails",
-            tableName: "item_details",
+            tableName: "item",
             timestamps: false,
         }
 

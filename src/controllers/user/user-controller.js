@@ -1,6 +1,6 @@
 const { SuccessResponse, ErrorResponse } = require('../../utils/common');
 const { StatusCodes } = require('http-status-codes');
-const { UserService , UserDetailsService , MailerService } = require('../../services')
+const { UserService , UserDetailsService , MailerService, ItemService } = require('../../services')
 
 async function login(req, res) {
     try {
@@ -64,7 +64,9 @@ async function registerUser(req,res){
             }
     
          MailerService.transporter.sendMail(message);
+        
 
+     
         SuccessResponse.data = responseData;
         SuccessResponse.message = "User registered";
         return res.status(StatusCodes.OK).json(SuccessResponse); 
@@ -179,6 +181,8 @@ async function updateUser(req, res) {
     }
   }
 
+
+  
   
   
   
@@ -191,5 +195,6 @@ module.exports = {
     updateUser,
     deleteUser,
     getUsers,
+    
   
 }

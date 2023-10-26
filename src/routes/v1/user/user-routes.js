@@ -1,6 +1,6 @@
 const express = require("express");
 const { UserController } = require("../../../controllers");
-const { AuthRequestMiddlewares,UserMiddlewares , UserDetailsMiddlewares} = require("../../../middlewares");
+const { AuthRequestMiddlewares,UserMiddlewares , UserDetailsMiddlewares,} = require("../../../middlewares");
 
 const router = express.Router();
 
@@ -12,7 +12,6 @@ router.post('/:id',UserMiddlewares.checkAuthentication,UserMiddlewares.validateU
 router.delete('/:id',UserMiddlewares.checkAuthentication,UserController.deleteUser);
 router.get('/',UserMiddlewares.isadmin,UserController.getAllUsers);
 router.get('/:id',UserMiddlewares.isadmin,UserController.getUsers);
-
 
 
 
