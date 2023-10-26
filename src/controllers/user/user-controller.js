@@ -107,7 +107,7 @@ async function updateUser(req, res) {
       console.log(error);
       return res.status(error.statusCode).json(ErrorResponse);
     }
-  }
+}
 
 
   async function  deleteUser(req,res){
@@ -183,7 +183,21 @@ async function updateUser(req, res) {
 
 
   
-  
+  async function forgotPassword(req, res) {
+    try { 
+      const username = req.body.username;
+      const user = await UserService.getUserByUsername(username);
+      if(!user){
+        throw new AppError("User not found", StatusCodes.NOT_FOUND);
+      }
+      SuccessResponse.message = "OTP sent to your registered email";
+      return res.status(StatusCodes.OK).json(SuccessResponse);
+    } catch (error) {
+      ErrorResponse.error = error;
+      console.log(error);
+      return res.status(error.statusCode).json(ErrorResponse);
+    }
+}
   
   
   
@@ -195,6 +209,6 @@ module.exports = {
     updateUser,
     deleteUser,
     getUsers,
-    
+    forgotPassword
   
 }

@@ -105,7 +105,7 @@ async function isadmin(req, res, next) {
           next();
         }
       }else{
-        throw new AppError('Bad request , Unable to update', StatusCodes.BAD_REQUEST);
+        throw new AppError(`You don't have access`, StatusCodes.BAD_REQUEST);
       }
   } catch (error) {
       ErrorResponse.statusCode = error.statusCode;
@@ -117,9 +117,29 @@ async function isadmin(req, res, next) {
 
 }
 
+async function validateForgotPasswordRequest(req, res, next) {
+  const bodyReq = req.body;
+  if (!req.is('application/json')) {
+      ErrorResponse.message = 'Something went wrong';
+      ErrorResponse.error = new AppError(['Content type must be of application/json'], StatusCodes.BAD_REQUEST)
+      return res
+          .status(StatusCodes.BAD_REQUEST)
+          .json(ErrorResponse);
+  }
+  else if (!bodyReq.username) {
+    ErrorResponse.message = "Something went to wrong";
+    ErrorResponse.error = new AppError(["username parameter missing in the incoming request"],StatusCodes.BAD_REQUEST);
+    return res
+            .status(StatusCodes.BAD_REQUEST)
+            .json(ErrorResponse);
+  }
+  next();
+}
+
 module.exports = {
   validateCreateUserRequest,
   validateUpdateUserRequest,
   checkAuthentication,
-  isadmin
+  isadmin,
+  validateForgotPasswordRequest
 };
