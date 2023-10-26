@@ -211,6 +211,7 @@ async function updateUser(req, res) {
                 </html>`
       } 
       MailerService.transporter.sendMail(message);
+      SuccessResponse.data="";
       SuccessResponse.message = "OTP sent to your registered email";
       return res.status(StatusCodes.OK).json(SuccessResponse);
     } catch (error) {
@@ -237,6 +238,7 @@ async function verifyOtp(req, res) {
       await OTPService.deleteOtp(otp.id);
       throw new AppError('Something went wrong', StatusCodes.NOT_FOUND);
     }
+    SuccessResponse.data= "";
     SuccessResponse.message = "OTP verified Successfully";
     return res.status(StatusCodes.OK).json(SuccessResponse);
   } catch (error) {
