@@ -14,7 +14,7 @@ const userRepo = new UserRepository();
 async function login(data) {
     try {
 
-        const user = await userRepo.getUserByName(data.username);
+        const user = await userRepo.getUserByUserName(data.username);
         if (!user) {
             throw new AppError('Bad credential', StatusCodes.NOT_FOUND);
         }

@@ -26,7 +26,7 @@ async function validateCreateUserRequest(req, res, next) {
     return res.status(StatusCodes.BAD_REQUEST).json(ErrorResponse);
   } 
   else if (bodyReq.username) {
-    const user = await userRepo.getUserByName(bodyReq.username);
+    const user = await userRepo.getUserByUserName(bodyReq.username);
     if (user) {
         ErrorResponse.message = 'Something went wrong';
         ErrorResponse.error = new AppError([' username already exist'], StatusCodes.BAD_REQUEST)
@@ -136,10 +136,72 @@ async function validateForgotPasswordRequest(req, res, next) {
   next();
 }
 
+async function validateVerifyForgotPasswordOtpRequest(req, res, next) {
+  const bodyReq = req.body;
+  if (!req.is('application/json')) {
+      ErrorResponse.message = 'Something went wrong';
+      ErrorResponse.error = new AppError(['Content type must be of application/json'], StatusCodes.BAD_REQUEST)
+      return res
+          .status(StatusCodes.BAD_REQUEST)
+          .json(ErrorResponse);
+  }
+  else if (!bodyReq.otp) {
+    ErrorResponse.message = "Something went to wrong";
+    ErrorResponse.error = new AppError(["OTP parameter missing in the incoming request"],StatusCodes.BAD_REQUEST);
+    return res
+            .status(StatusCodes.BAD_REQUEST)
+            .json(ErrorResponse);
+  }
+  else if (!bodyReq.id) {
+    ErrorResponse.message = "Something went to wrong";
+    ErrorResponse.error = new AppError(["user id parameter missing in the incoming request"],StatusCodes.BAD_REQUEST);
+    return res
+            .status(StatusCodes.BAD_REQUEST)
+            .json(ErrorResponse);
+  }
+  next();
+}
+
+async function validateResetPasswordRequest(req, res, next) {
+  const bodyReq = req.body;
+  if (!req.is('application/json')) {
+      ErrorResponse.message = 'Something went wrong';
+      ErrorResponse.error = new AppError(['Content type must be of application/json'], StatusCodes.BAD_REQUEST)
+      return res
+          .status(StatusCodes.BAD_REQUEST)
+          .json(ErrorResponse);
+  }
+  else if (!bodyReq.user_id) {
+    ErrorResponse.message = "Something went to wrong";
+    ErrorResponse.error = new AppError(["user_id missing in the incoming request"],StatusCodes.BAD_REQUEST);
+    return res
+            .status(StatusCodes.BAD_REQUEST)
+            .json(ErrorResponse);
+  }
+  else if (!bodyReq.password) {
+    ErrorResponse.message = "Something went to wrong";
+    ErrorResponse.error = new AppError(["password id parameter missing in the incoming request"],StatusCodes.BAD_REQUEST);
+    return res
+            .status(StatusCodes.BAD_REQUEST)
+            .json(ErrorResponse);
+  }
+  else if (!bodyReq.otp) {
+    ErrorResponse.message = "Something went to wrong";
+    ErrorResponse.error = new AppError(["otp id parameter missing in the incoming request"],StatusCodes.BAD_REQUEST);
+    return res
+            .status(StatusCodes.BAD_REQUEST)
+            .json(ErrorResponse);
+  }
+
+  next();
+}
+
 module.exports = {
   validateCreateUserRequest,
   validateUpdateUserRequest,
   checkAuthentication,
   isadmin,
-  validateForgotPasswordRequest
+  validateForgotPasswordRequest,
+  validateVerifyForgotPasswordOtpRequest,
+  validateResetPasswordRequest
 };
