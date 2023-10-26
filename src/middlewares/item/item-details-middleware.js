@@ -86,9 +86,32 @@ async function validateCreateItemDetailRequest(req, res, next) {
         );
         return res.status(StatusCodes.BAD_REQUEST).json(ErrorResponse);
       } 
+      next();
 }
 
+async function validateUpdateItemDetailRequest(req,res,next){
+  const bodyReq = req.body;
+  if (!bodyReq.item_name) {
+    ErrorResponse.message = "Something went to wrong";
+    ErrorResponse.error = new AppError(
+      ["item_name parameter missing in the incoming request"],
+      StatusCodes.BAD_REQUEST
+    );
+    return res.status(StatusCodes.BAD_REQUEST).json(ErrorResponse);
+  }
+  else if (!bodyReq.item_price) {
+    ErrorResponse.message = "Something went to wrong";
+    ErrorResponse.error = new AppError(
+      ["item_price missing in the incoming request"],
+      StatusCodes.BAD_REQUEST
+    );
+    return res.status(StatusCodes.BAD_REQUEST).json(ErrorResponse);
+  }  
+  next();
+
+}
 
 module.exports = {
     validateCreateItemDetailRequest,
+    validateUpdateItemDetailRequest
 }

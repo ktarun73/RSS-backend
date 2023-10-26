@@ -1,5 +1,5 @@
 const CrudRepository = require('../crud-repository');
-const { UserDetails } = require('../../models');
+const { ItemDetails } = require('../../models');
 const sequelize = require('sequelize');
 const Op = sequelize.Op;
 class ItemDetailsRepository extends CrudRepository {
@@ -7,7 +7,10 @@ class ItemDetailsRepository extends CrudRepository {
         super(ItemDetails);
     }
 
-    
+    async ItemDetailsById(id) {
+        const itemDetail = await ItemDetails.findOne({ where: { id: id } });
+        return itemDetail;
+      }
 }
 
 module.exports = ItemDetailsRepository;

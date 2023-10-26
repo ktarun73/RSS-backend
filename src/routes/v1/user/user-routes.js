@@ -1,6 +1,6 @@
 const express = require("express");
 const { UserController } = require("../../../controllers");
-const { AuthRequestMiddlewares,UserMiddlewares , UserDetailsMiddlewares} = require("../../../middlewares");
+const { AuthRequestMiddlewares,UserMiddlewares , UserDetailsMiddlewares,} = require("../../../middlewares");
 
 const router = express.Router();
 
@@ -12,7 +12,6 @@ router.delete('/:id',UserController.deleteUser);
 router.get('/',UserController.getAllUsers);
 router.get('/:id',UserController.getUsers)
 router.post('/:id',UserMiddlewares.checkAuthentication,UserMiddlewares.validateUpdateUserRequest,UserDetailsMiddlewares.validateUpdateUserDetailRequest,UserController.updateUser);
-
 
 
 
