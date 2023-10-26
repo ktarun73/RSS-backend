@@ -9,5 +9,6 @@ module.exports = {
     JWT_SECRET: process.env.JWT_SECRET,
     MAIL_SERVICE: process.env.MAIL_SERVICE,
     MAIL_AUTH_USER: process.env.MAIL_AUTH_USER,
-    MAIL_AUTH_PASSWORD: process.env.MAIL_AUTH_PASSWORD
+    MAIL_AUTH_PASSWORD: process.env.MAIL_AUTH_PASSWORD,
+    OTP_EXPIRATION_TIME: process.env.OTP_EXPIRATION_TIME
 }

@@ -14,7 +14,7 @@ const userRepo = new UserRepository();
 async function login(data) {
     try {
 
-        const user = await userRepo.getUserByName(data.username);
+        const user = await userRepo.getUserByUserName(data.username);
         if (!user) {
             throw new AppError('Bad credential', StatusCodes.NOT_FOUND);
         }
@@ -160,6 +160,19 @@ async function registerUser(data) {
         throw new AppError('Something went wrong', StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
+
+async function getUserByUsername(username) {
+  try {
+    const user = await userRepo.getUserByUserName(username);
+    return user;
+  } catch (error) {
+    console.log(error);
+    throw new AppError(
+      "Cannot get User object",
+      StatusCodes.INTERNAL_SERVER_ERROR
+    );
+  }
+}
   
 
 module.exports = {
@@ -167,11 +180,8 @@ module.exports = {
     registerUser,
     getAllUser,
     updateUser,
-
     getUser,
     deleteUser,
-
-    
-    isAuthenticated
-
+    isAuthenticated,
+    getUserByUsername
 }

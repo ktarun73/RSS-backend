@@ -1,6 +1,7 @@
 const { SuccessResponse, ErrorResponse } = require('../../utils/common');
 const { StatusCodes } = require('http-status-codes');
-const { UserService , UserDetailsService , MailerService, ItemService } = require('../../services')
+const AppError = require('../../utils/errors/app-error');
+const { UserService , UserDetailsService , MailerService, OTPService } = require('../../services')
 
 async function login(req, res) {
     try {
@@ -107,7 +108,7 @@ async function updateUser(req, res) {
       console.log(error);
       return res.status(error.statusCode).json(ErrorResponse);
     }
-  }
+}
 
 
   async function  deleteUser(req,res){
@@ -183,7 +184,88 @@ async function updateUser(req, res) {
 
 
   
-  
+  async function forgotPassword(req, res) {
+    try { 
+      const username = req.body.username;
+      const user = await UserService.getUserByUsername(username);
+      if(!user){
+        throw new AppError("User not found", StatusCodes.NOT_FOUND);
+      }
+      const userDetails = await UserDetailsService.getUserDetailsByUserId(user.id);
+      const email = userDetails.email;
+      const generateOtp = await OTPService.generateOtp(user.id);
+      const otp = generateOtp.otp;
+      let message = {
+        from: 'ktarun2500@gmail.com',
+        to: email,
+        subject: "Your OTP for password reset is here!",
+        html: `<html>
+                  <body>
+                    <h1>Password Reset OTP</h1>
+                    <p>Hello,</p>
+                    <p>Your OTP for resetting your password is: <strong>${otp}</strong></p>
+                    <p>Please enter this OTP on the password reset page to proceed.</p>
+                    <p>If you didn't request this password reset, please ignore this email.</p>
+                    <p>Thank you!</p>
+                  </body>
+                </html>`
+      } 
+      MailerService.transporter.sendMail(message);
+      SuccessResponse.message = "OTP sent to your registered email";
+      return res.status(StatusCodes.OK).json(SuccessResponse);
+    } catch (error) {
+      ErrorResponse.error = error;
+      console.log(error);
+      return res.status(error.statusCode).json(ErrorResponse);
+    }
+}
+
+async function verifyOtp(req, res) {
+  try {
+    const data = {
+      otp: req.body.otp,
+      user_id: req.body.id
+    }
+    const otp = await OTPService.getOtp(data);
+    const currentTime = new Date();
+    if(currentTime > otp.expiration_time){
+      await OTPService.deleteOtp(otp.id);
+      throw new AppError('OTP expired , Please generate new' , StatusCodes.GONE);
+    }
+    const verifyOtp = await OTPService.verifyOtp(otp);
+    if(!verifyOtp){
+      await OTPService.deleteOtp(otp.id);
+      throw new AppError('Something went wrong', StatusCodes.NOT_FOUND);
+    }
+    SuccessResponse.message = "OTP verified Successfully";
+    return res.status(StatusCodes.OK).json(SuccessResponse);
+  } catch (error) {
+    ErrorResponse.error = error;
+    console.log(error);
+    return res.status(error.statusCode).json(ErrorResponse);
+  }
+}
+
+async function resetPassword(req, res) {
+  try {
+    const password = req.body.password;
+    const userId = req.body.user_id;
+    const otp = req.body.otp;
+    const isOtpVerified = await OTPService.isVerified({otp: otp , user_id:userId});
+    if(!isOtpVerified){
+      throw new AppError("Please try again or generate a new OTP",StatusCodes.BAD_REQUEST)
+    }
+    
+    const updatePassword = await UserService.updateUser(userId,{password:password})
+    SuccessResponse.data = updatePassword;
+    SuccessResponse.message = "Password Changed successfully";
+    return res.status(StatusCodes.OK).json(SuccessResponse);
+  } catch (error) {
+    ErrorResponse.error = error;
+    console.log(error);
+    return res.status(error.statusCode).json(ErrorResponse);
+  }
+}
   
   
   
@@ -195,6 +277,8 @@ module.exports = {
     updateUser,
     deleteUser,
     getUsers,
-    
+    forgotPassword,
+    verifyOtp,
+    resetPassword
   
 }
